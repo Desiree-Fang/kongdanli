@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生活小能手 · 打卡乐园</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:linear-gradient(165deg,#FFF7E8 0%,#FFE9F1 45%,#E6F3FF 100%);
+  background-attachment:fixed;
+  color:#4A3B36;min-height:100vh;
+  -webkit-user-select:none;user-select:none;
+}
+button{font-family:inherit;}
+input{font-family:inherit;}
+
+/* ---------- 通用 ---------- */
+.screen{min-height:100vh;padding:16px 16px 50px;max-width:920px;margin:0 auto;animation:fadeIn .32s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.back-btn{
+  width:48px;height:48px;flex:0 0 48px;border:none;border-radius:50%;
+  background:#fff;font-size:28px;line-height:1;color:#7A6459;cursor:pointer;
+  box-shadow:0 4px 0 #EADFD6,0 8px 16px rgba(0,0,0,.07);
+  display:flex;align-items:center;justify-content:center;padding-bottom:6px;
+  transition:transform .12s;
+}
+.back-btn:active{transform:translateY(4px);box-shadow:0 0 0 #EADFD6;}
+.page-title{font-size:21px;font-weight:900;margin:0;color:#5A4438;letter-spacing:.5px;}
+.hint{font-size:15px;color:#9C8B80;font-weight:700;margin:0 0 16px;text-align:center;}
+.empty-tip{text-align:center;font-size:16px;font-weight:800;color:#B39C90;padding:30px 14px;line-height:1.7;}
+
+/* ---------- 首页 ---------- */
+.home-hero{text-align:center;margin-top:22px;}
+.hero-emoji{font-size:44px;letter-spacing:6px;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+.app-title{
+  font-size:clamp(32px,9.5vw,48px);font-weight:900;letter-spacing:4px;
+  color:#FF7A93;margin:6px 0 4px;
+  text-shadow:0 3px 0 #fff,0 7px 0 rgba(255,122,147,.22);
+}
+.app-sub{font-size:16px;color:#B39C90;font-weight:700;letter-spacing:2px;margin:0;}
+
+.role-grid{display:flex;flex-direction:column;gap:16px;margin-top:34px;}
+@media(min-width:640px){.role-grid{flex-direction:row;}}
+.role-btn{
+  flex:1;border:none;border-radius:30px;padding:24px 16px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:7px;color:#fff;
+  font-weight:900;box-shadow:0 7px 0 rgba(0,0,0,.13),0 14px 26px rgba(0,0,0,.1);
+  transition:transform .12s,box-shadow .12s;
+}
+.role-btn:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.13);}
+.role-btn.kids{background:linear-gradient(135deg,#7ED0E8,#4FAED6);}
+.role-btn.parent{background:linear-gradient(135deg,#FFBE7C,#FF8FA3);}
+.role-btn.teacher{background:linear-gradient(135deg,#A8DCA0,#6FC48A);}
+.rb-icon{font-size:48px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));}
+.rb-title{font-size:23px;letter-spacing:3px;}
+.rb-desc{font-size:12.5px;font-weight:600;opacity:.92;letter-spacing:1px;}
+
+/* ---------- 幼儿端 ---------- */
+.home-grid{display:flex;flex-direction:column;gap:18px;margin-top:26px;}
+.home-btn{
+  border:none;border-radius:28px;padding:20px 22px;display:flex;align-items:center;gap:16px;
+  font-size:22px;font-weight:900;cursor:pointer;color:#fff;text-align:left;
+  box-shadow:0 7px 0 rgba(0,0,0,.13),0 14px 26px rgba(0,0,0,.1);
+  transition:transform .12s,box-shadow .12s;
+}
+.home-btn:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.13);}
+.home-btn.learn{background:linear-gradient(135deg,#7ED0E8,#4FAED6);}
+.home-btn.checkin{background:linear-gradient(135deg,#FFBE7C,#FF8FA3);}
+.hb-icon{font-size:40px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));}
+.hb-main{flex:1;display:flex;flex-direction:column;gap:3px;}
+.hb-title{font-size:24px;font-weight:900;letter-spacing:2px;}
+.hb-desc{font-size:13px;font-weight:600;opacity:.92;letter-spacing:1px;}
+.hb-arrow{font-size:32px;opacity:.75;}
+
+/* ---------- 学一学：类别 ---------- */
+.cat-grid{display:grid;gap:16px;grid-template-columns:1fr;}
+@media(min-width:580px){.cat-grid{grid-template-columns:repeat(3,1fr);}}
+.cat-card{
+  border:none;border-radius:26px;padding:22px 14px;cursor:pointer;background:#fff;
+  box-shadow:0 6px 0 #EFE3D9,0 12px 24px rgba(0,0,0,.07);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:transform .12s;border-bottom:6px solid var(--c,#8ED3E8);
+}
+.cat-card:active{transform:translateY(5px);}
+.cat-emoji{font-size:52px;}
+.cat-name{font-size:20px;font-weight:900;color:#5A4438;}
+.cat-sub{font-size:12.5px;color:#A4907F;font-weight:700;letter-spacing:.5px;}
+
+/* ---------- 学一学：详情 ---------- */
+.tabs{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.tab{
+  border:none;border-radius:18px;padding:11px 20px;font-size:16px;font-weight:800;
+  background:#fff;color:#9C8B80;cursor:pointer;
+  box-shadow:0 4px 0 #EADFD6;transition:transform .12s;
+}
+.tab:active{transform:translateY(3px);}
+.tab.active{background:linear-gradient(135deg,#FFC46B,#FF9F45);color:#fff;box-shadow:0 4px 0 #DE8B33;}
+
+.song-card{
+  background:#fff;border-radius:26px;padding:20px 20px 22px;margin-bottom:18px;
+  box-shadow:0 5px 0 #F0E4DA,0 12px 26px rgba(0,0,0,.06);
+  position:relative;overflow:hidden;
+}
+.song-card::after{
+  content:"♪";position:absolute;right:-6px;top:-24px;font-size:120px;
+  color:rgba(255,180,120,.13);font-weight:900;pointer-events:none;
+}
+.song-label{font-size:14px;font-weight:900;color:#FF9F45;letter-spacing:2px;margin-bottom:10px;}
+.song-text{font-size:19.5px;line-height:1.95;white-space:pre-line;color:#5A4438;font-weight:700;position:relative;z-index:1;}
+.play-btn{
+  margin-top:16px;border:none;border-radius:20px;padding:13px 26px;
+  background:linear-gradient(135deg,#FFD86E,#FFB02E);color:#7A4A00;
+  font-weight:900;font-size:17px;cursor:pointer;
+  box-shadow:0 5px 0 #E09B26;display:inline-flex;align-items:center;gap:9px;
+  transition:transform .12s;letter-spacing:1px;
+}
+.play-btn:active{transform:translateY(5px);box-shadow:0 0 0 #E09B26;}
+
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(min-width:720px){.steps{grid-template-columns:repeat(4,1fr);}}
+.step{
+  background:#fff;border-radius:22px;padding:12px 8px 14px;text-align:center;
+  box-shadow:0 4px 0 #F0E4DA,0 10px 20px rgba(0,0,0,.05);
+}
+.step-art{width:100%;height:auto;display:block;}
+.step-num{
+  display:inline-block;width:26px;height:26px;line-height:26px;border-radius:50%;
+  background:linear-gradient(135deg,#FFC46B,#FF9F45);color:#fff;font-weight:900;
+  font-size:14px;margin-bottom:2px;box-shadow:0 2px 0 #DE8B33;
+}
+.step-text{font-size:15px;font-weight:800;color:#6B5A50;margin-top:4px;line-height:1.35;}
+
+/* ---------- 动物贴纸 ---------- */
+.sticker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(min-width:460px){.sticker-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:700px){.sticker-grid{grid-template-columns:repeat(6,1fr);}}
+.sticker{
+  border:none;background:#fff;border-radius:22px;padding:12px 5px 10px;cursor:pointer;
+  box-shadow:0 4px 0 #EFE3D9,0 9px 18px rgba(0,0,0,.06);
+  position:relative;transition:transform .12s;display:flex;flex-direction:column;align-items:center;
+}
+.sticker:active{transform:scale(.93);}
+.sticker-emoji{font-size:38px;line-height:1.1;}
+.sticker-name{font-size:12px;color:#8A776C;font-weight:800;margin-top:4px;letter-spacing:.3px;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sticker-badge{
+  position:absolute;top:-6px;right:-4px;background:linear-gradient(135deg,#FFD86E,#FFB02E);
+  color:#7A4A00;font-size:11px;font-weight:900;border-radius:12px;padding:2px 7px;
+  box-shadow:0 2px 5px rgba(224,155,38,.5);border:2px solid #fff;
+}
+
+/* ---------- 打卡页 ---------- */
+.scene-tabs{display:flex;gap:10px;margin-bottom:18px;}
+.scene-tab{
+  flex:1;border:none;border-radius:20px;padding:15px 8px;font-size:16.5px;font-weight:900;
+  background:#fff;color:#9C8B80;cursor:pointer;box-shadow:0 4px 0 #EADFD6;
+  transition:transform .12s;letter-spacing:.5px;
+}
+.scene-tab:active{transform:translateY(4px);}
+.scene-tab.active{background:linear-gradient(135deg,#FFB07C,#FF8FA3);color:#fff;box-shadow:0 4px 0 #E0748C;}
+
+.task-row{
+  display:flex;align-items:center;gap:14px;background:#fff;border-radius:24px;
+  padding:15px 18px;margin-bottom:14px;
+  box-shadow:0 5px 0 #EFE3D9,0 10px 22px rgba(0,0,0,.05);
+}
+.task-icon{font-size:36px;line-height:1;}
+.task-name{flex:1;font-size:19px;font-weight:900;color:#5A4438;letter-spacing:.5px;}
+.star-btn{
+  width:66px;height:66px;flex:0 0 66px;border:none;border-radius:50%;
+  background:#F2ECE6;font-size:34px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:#CFC2B7;
+  transition:transform .15s,background .2s;padding:0;
+}
+.star-btn.on{
+  background:radial-gradient(circle at 34% 28%,#FFF3C4,#FFC53D);
+  color:#fff;box-shadow:0 0 0 5px #FFF6D6,0 0 24px rgba(255,201,61,.85);
+  text-shadow:0 2px 4px rgba(190,120,0,.35);
+}
+.star-btn.pop{animation:pop .55s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{0%{transform:scale(1);}35%{transform:scale(1.42) rotate(14deg);}65%{transform:scale(.9) rotate(-7deg);}100%{transform:scale(1) rotate(0);}}
+
+.board-foot{
+  text-align:center;font-size:17px;font-weight:800;color:#8A776C;margin-top:22px;
+  background:#fff;border-radius:20px;padding:15px;box-shadow:0 4px 0 #EFE3D9;
+}
+.board-foot b{font-size:24px;color:#FF9F45;}
+
+/* ---------- 教师端 ---------- */
+.add-child-btn{
+  width:100%;border:2.5px dashed #F0C36A;background:#FFFBF0;color:#D9941F;
+  border-radius:22px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;
+  margin-bottom:16px;letter-spacing:1px;transition:background .15s;
+}
+.add-child-btn:active{background:#FFF3D6;}
+
+.kid-list{display:flex;flex-direction:column;gap:12px;}
+.kid-row{
+  display:flex;align-items:center;gap:14px;background:#fff;border-radius:22px;
+  padding:13px 18px;cursor:pointer;
+  box-shadow:0 5px 0 #EFE3D9,0 10px 22px rgba(0,0,0,.05);
+  transition:transform .12s;
+}
+.kid-row:active{transform:translateY(3px);}
+.kid-emoji{font-size:36px;line-height:1;}
+.kid-name{flex:1;font-size:19px;font-weight:900;color:#5A4438;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.kid-stars{font-size:16px;font-weight:900;color:#FF9F45;background:#FFF6E2;border-radius:14px;padding:5px 12px;flex:0 0 auto;}
+.kid-arrow{font-size:26px;color:#D8C9BE;line-height:1;}
+
+/* ---------- 统计 / 信息页 ---------- */
+.total-card{
+  background:#fff;border-radius:28px;padding:24px 20px;text-align:center;margin-bottom:18px;
+  box-shadow:0 6px 0 #EFE3D9,0 12px 26px rgba(0,0,0,.06);
+}
+.total-star{font-size:44px;line-height:1;margin-bottom:6px;}
+.total-num{
+  font-size:62px;font-weight:900;line-height:1;letter-spacing:-2px;
+  background:linear-gradient(135deg,#FFB02E,#FF7A93);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.total-label{font-size:15px;font-weight:800;color:#9C8B80;margin-top:8px;letter-spacing:1px;}
+
+.chart{
+  display:flex;gap:8px;height:230px;padding:16px 12px 10px;background:#fff;
+  border-radius:26px;box-shadow:0 6px 0 #EFE3D9,0 12px 26px rgba(0,0,0,.05);
+}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;min-width:0;}
+.bar-num{font-size:14px;font-weight:900;color:#C0AFA3;height:20px;line-height:20px;}
+.bar-num.has{color:#FF9F45;}
+.bar-track{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;padding:0 2px;}
+.bar-fill{
+  width:100%;max-width:44px;border-radius:12px 12px 6px 6px;
+  background:linear-gradient(180deg,#FFD96A,#FF9F45);
+  min-height:5px;transition:height .55s cubic-bezier(.34,1.4,.64,1);
+  box-shadow:0 3px 8px rgba(255,159,69,.4);
+}
+.bar-fill.zero{background:#EFE8E2;box-shadow:none;}
+.bar-label{font-size:13px;font-weight:900;color:#A4907F;height:20px;line-height:20px;}
+.bar-label.today{color:#FF7A93;}
+
+/* ---------- 编辑幼儿 ---------- */
+.av-preview{
+  text-align:center;font-size:80px;line-height:1;margin:4px 0 20px;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.12));
+}
+.field-label{font-size:15px;font-weight:900;color:#9C8B80;letter-spacing:1.5px;margin:0 0 10px;}
+.av-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:22px;}
+@media(min-width:520px){.av-grid{grid-template-columns:repeat(8,1fr);}}
+.av-opt{
+  border:none;background:#fff;border-radius:16px;font-size:28px;padding:8px 0;cursor:pointer;
+  box-shadow:0 3px 0 #EFE3D9;transition:transform .1s;line-height:1;
+}
+.av-opt:active{transform:scale(.9);}
+.av-opt.active{background:linear-gradient(135deg,#FFE9B0,#FFC85C);box-shadow:0 3px 0 #E0A32E;}
+
+.name-input{
+  width:100%;border:2.5px solid #F0E4DA;border-radius:18px;padding:14px 16px;
+  font-size:19px;font-weight:800;color:#5A4438;background:#fff;outline:none;
+  margin-bottom:24px;transition:border-color .15s;
+}
+.name-input:focus{border-color:#FFC46B;}
+
+.btn-primary{
+  width:100%;border:none;border-radius:22px;padding:17px;font-size:19px;font-weight:900;
+  color:#fff;cursor:pointer;letter-spacing:3px;margin-bottom:12px;
+  background:linear-gradient(135deg,#FFB02E,#FF8FA3);box-shadow:0 5px 0 #E0748C;
+  transition:transform .12s;
+}
+.btn-primary:active{transform:translateY(5px);box-shadow:0 0 0 #E0748C;}
+.btn-danger{
+  width:100%;border:none;border-radius:22px;padding:15px;font-size:17px;font-weight:900;
+  color:#E05A6E;background:#FFF0F2;cursor:pointer;letter-spacing:1px;
+  box-shadow:0 4px 0 #F7D6DC;transition:transform .12s;
+}
+.btn-danger:active{transform:translateY(4px);box-shadow:0 0 0 #F7D6DC;}
+
+.info-actions{margin-top:20px;display:flex;flex-direction:column;gap:12px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =========================================================
+   1. 数据与存储
+   ========================================================= */
+const STORE_KEY = 'life_skills_app_v2';
+
+const AVATAR_POOL = [
+  '🐼','🐨','🦊','🐰','🐯','🦁','🐮','🐷','🐸','🐵','🐔','🐧',
+  '🐤','🦆','🦉','🐙','🦑','🐢','🐍','🐝','🦋','🐞','🐌','🐳',
+  '🐬','🐠','🐡','🦈','🦄','🐴','🐎','🐑','🐐','🐘','🦒','🦓',
+  '🦔','🐿️','🐻','🐶','🐱','🐭','🐹','🐺','🦝','🦥','🦦','🐲'
+];
+
+const DEFAULT_AVATARS = ['🐼','🐨','🦊','🐰','🐯','🦁','🐮','🐷','🐸','🐵','🐔','🐧','🐤','🦉','🐙','🐢','🐝','🦋','🐞','🐳','🐬','🐠','🦄','🐴','🐑','🐘'];
+const DEFAULT_NAMES   = ['熊猫','考拉','狐狸','小兔','老虎','狮子','小牛','小猪','青蛙','猴子','小鸡','企鹅','小鸭','猫头鹰','章鱼','乌龟','蜜蜂','蝴蝶','瓢虫','鲸鱼','海豚','小鱼','独角兽','小马','小羊','大象'];
+
+function uid(){
+  return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function defaultChildren(){
+  return DEFAULT_AVATARS.map((emoji, i) => ({
+    id: 'c' + String(i + 1).padStart(2, '0'),
+    emoji,
+    name: DEFAULT_NAMES[i]
+  }));
+}
+
+function loadDB(){
+  try{
+    const raw = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (raw && Array.isArray(raw.children)){
+      raw.records = raw.records || {};
+      return raw;
+    }
+  }catch(e){}
+  return { children: defaultChildren(), records: {} };
+}
+
+let DB = loadDB();
+
+function saveDB(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(DB)); }catch(e){}
+}
+
+function findChild(id){
+  return DB.children.find(c => c.id === id) || null;
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+/* ---- 日期与记录 ---- */
+function dateKey(d){
+  d = d || new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getRec(childId, dk){
+  if (!DB.records[childId]) DB.records[childId] = {};
+  if (!DB.records[childId][dk]){
+    DB.records[childId][dk] = {
+      school:{sock:0,coat:0,shoe:0},
+      home:{sock:0,coat:0,shoe:0}
+    };
+  }
+  const r = DB.records[childId][dk];
+  r.school = Object.assign({sock:0,coat:0,shoe:0}, r.school);
+  r.home   = Object.assign({sock:0,coat:0,shoe:0}, r.home);
+  return r;
+}
+
+function dayStars(childId, dk){
+  const r = DB.records[childId] && DB.records[childId][dk];
+  if (!r) return 0;
+  let n = 0;
+  ['school','home'].forEach(sc=>{
+    const o = r[sc];
+    if (o) ['sock','coat','shoe'].forEach(k=>{ if (o[k]) n++; });
+  });
+  return n;
+}
+
+function weekDays(){
+  const now = new Date();
+  const day = now.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff);
+  const arr = [];
+  for (let i = 0; i < 7; i++){
+    arr.push(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i));
+  }
+  return arr;
+}
+
+function weekTotal(childId){
+  return weekDays().reduce((s, d) => s + dayStars(childId, dateKey(d)), 0);
+}
+
+/* =========================================================
+   2. 声音
+   ========================================================= */
+let audioCtx = null;
+function getCtx(){
+  if (!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+  }
+  return audioCtx;
+}
+
+function chime(){
+  const ctx = getCtx();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume();
+  const t = ctx.currentTime;
+  [523.25, 659.25, 783.99, 1046.5].forEach((f, i)=>{
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(f, t + i*0.085);
+    g.gain.setValueAtTime(0.0001, t + i*0.085);
+    g.gain.linearRampToValueAtTime(0.22, t + i*0.085 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0008, t + i*0.085 + 0.5);
+    o.connect(g).connect(ctx.destination);
+    o.start(t + i*0.085);
+    o.stop(t + i*0.085 + 0.55);
+  });
+}
+
+if ('speechSynthesis' in window){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = ()=>{ window.speechSynthesis.getVoices(); };
+}
+
+function speak(text, opts){
+  if (!('speechSynthesis' in window)) return;
+  opts = opts || {};
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.pitch = opts.pitch != null ? opts.pitch : 1.7;
+    u.rate  = opts.rate  != null ? opts.rate  : 0.85;
+    u.volume = 1;
+    const vs = window.speechSynthesis.getVoices();
+    const zh = vs.find(v => /zh[-_]?CN|Chinese|中文|普通话/i.test(v.lang + v.name));
+    if (zh) u.voice = zh;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* =========================================================
+   3. 图示零件（SVG）
+   ========================================================= */
+const P_SOCK = "M-14,-34 L14,-34 L14,14 L30,14 A16,16 0 0 1 30,46 L0,46 Q-14,46 -14,32 L-14,-34 Z";
+
+function sockG(x,y,rot=0,s=1,fill='#8ED3E8',stroke='#4A9EC0'){
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">
+    <path d="${P_SOCK}" fill="${fill}" stroke="${stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+    <rect x="-14" y="-34" width="28" height="9" rx="4" fill="#ffffff" opacity="0.85"/>
+  </g>`;
+}
+function handG(x,y,rot=0,s=1){
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">
+    <ellipse cx="0" cy="2" rx="12" ry="13" fill="#FFD9B3" stroke="#E8A87C" stroke-width="3"/>
+    <path d="M-7,-10 L-8,-18 M0,-12 L0,-20 M7,-10 L8,-18" fill="none" stroke="#E8A87C" stroke-width="3" stroke-linecap="round"/>
+  </g>`;
+}
+function footG(x,y,rot=0,s=1){
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">
+    <ellipse cx="0" cy="0" rx="16" ry="24" fill="#FFE3C7" stroke="#E8A87C" stroke-width="3"/>
+    <circle cx="-10" cy="-22" r="6" fill="#FFE3C7" stroke="#E8A87C" stroke-width="3"/>
+    <circle cx="1" cy="-26" r="6" fill="#FFE3C7" stroke="#E8A87C" stroke-width="3"/>
+    <circle cx="11" cy="-21" r="5.5" fill="#FFE3C7" stroke="#E8A87C" stroke-width="3"/>
+  </g>`;
+}
+function coatG(x,y,rot=0,s=1,fill='#FF9E7A',stroke='#DE6E48'){
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">
+    <path d="M-14,-56 L14,-56 L34,-44 L40,48 L-40,48 L-34,-44 Z" fill="${fill}" stroke="${stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M-14,-56 L0,-40 L14,-56" fill="none" stroke="${stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+    <circle cx="0" cy="2" r="3.2" fill="${stroke}"/>
+    <circle cx="0" cy="24" r="3.2" fill="${stroke}"/>
+  </g>`;
+}
+function hangerG(x,y,rot=0,s=1){
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})" fill="none" stroke="#B08968" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0,-22 L0,-32"/>
+    <path d="M0,-32 a7,7 0 1 1 -7,7"/>
+    <path d="M0,-22 L-46,14 L46,14 Z"/>
+  </g>`;
+}
+function shoeG(x,y,rot=0,s=1,fill='#7BC4A8',stroke='#4E9C7E'){
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">
+    <path d="M-42,8 L-42,-8 Q-42,-20 -30,-20 L0,-20 Q18,-20 30,-6 Q40,3 40,8 Z" fill="${fill}" stroke="${stroke}" stroke-width="3.5" stroke-linejoin="round"/>
+    <rect x="-44" y="6" width="86" height="11" rx="5.5" fill="#ffffff" stroke="${stroke}" stroke-width="3"/>
+    <path d="M-18,-20 L-18,6 M-4,-20 L-4,6" stroke="${stroke}" stroke-width="2.5" opacity=".55"/>
+  </g>`;
+}
+function arrowUp(x,y,h=46,color='#FF8FA3'){
+  return `<g stroke="${color}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M${x},${y} L${x},${y-h}"/>
+    <path d="M${x-11},${y-h+13} L${x},${y-h} L${x+11},${y-h+13}"/>
+  </g>`;
+}
+function arrowDown(x,y,h=46,color='#FF8FA3'){
+  return `<g stroke="${color}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M${x},${y} L${x},${y+h}"/>
+    <path d="M${x-11},${y+h-13} L${x},${y+h} L${x+11},${y+h-13}"/>
+  </g>`;
+}
+function arrowRight(x,y,w=42,color='#FF8FA3'){
+  return `<g stroke="${color}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M${x},${y} L${x+w},${y}"/>
+    <path d="M${x+w-13},${y-11} L${x+w},${y} L${x+w-13},${y+11}"/>
+  </g>`;
+}
+function sparkle(x,y,s=32){
+  return `<text x="${x}" y="${y}" font-size="${s}" text-anchor="middle">✨</text>`;
+}
+function sv(inner){ return `<svg class="step-art" viewBox="0 0 200 170" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`; }
+
+/* =========================================================
+   4. 学习内容
+   ========================================================= */
+const CATS = [
+{
+  key:'sock', name:'穿脱袜子', emoji:'🧦', color:'#7ED0E8',
+  items:[
+    {
+      name:'穿袜子',
+      song:'小袜子，手中拿，\n袜口对准小脚丫。\n小手用力往上拉，\n小脚穿上笑哈哈。',
+      steps:[
+        {t:'拿起小袜子', art:sv(sockG(100,108) + handG(76,76) + handG(124,76))},
+        {t:'袜口对准小脚丫', art:sv(footG(154,106,0,0.78) + sockG(74,104,-18) + arrowRight(114,72,22))},
+        {t:'小手用力往上拉', art:sv(footG(108,120,0,0.85) + sockG(104,106,0,0.98) + handG(74,66) + handG(134,66) + arrowUp(176,152,52))},
+        {t:'小脚穿上笑哈哈', art:sv(footG(100,114,0,0.9) + sockG(96,100,0,1) + sparkle(38,54) + sparkle(164,54))}
+      ]
+    },
+    {
+      name:'脱袜子',
+      song:'小袜子，往下卷，\n卷到脚跟慢慢拽。\n小脚丫，钻出来，\n袜子脱下真能干。',
+      steps:[
+        {t:'小手抓住袜口', art:sv(footG(108,114,0,0.9) + sockG(104,100,0,1) + handG(74,68) + handG(134,68))},
+        {t:'往下卷一卷', art:sv(footG(108,112,0,0.9) + sockG(104,128,0,0.82) + handG(78,102) + handG(130,102) + arrowDown(178,124,38))},
+        {t:'小脚丫钻出来', art:sv(footG(104,80,0,0.85) + sockG(126,132,0,0.78) + arrowUp(62,142,44))},
+        {t:'袜子脱下来啦', art:sv(footG(152,114,0,0.85) + sockG(62,104,0,0.95) + sparkle(106,52))}
+      ]
+    },
+    {
+      name:'翻袜子',
+      song:'小袜子，翻个身，\n小手伸进袜口里。\n抓住袜尖往外翻，\n袜子翻好真整齐。',
+      steps:[
+        {t:'小手伸进袜口', art:sv(handG(100,60) + sockG(100,108))},
+        {t:'抓住小袜尖', art:sv(sockG(98,100) + handG(130,148))},
+        {t:'往外翻一翻', art:sv(sockG(92,106,0,1,'#FFE3C7','#E8A87C') + arrowUp(158,152,50))},
+        {t:'袜子翻好啦', art:sv(sockG(100,102) + sparkle(40,54) + sparkle(162,54))}
+      ]
+    }
+  ]
+},
+{
+  key:'coat', name:'穿脱外套', emoji:'🧥', color:'#FFB07C',
+  items:[
+    {
+      name:'穿外套',
+      song:'抓领子，盖房子，\n小老鼠，钻洞子。\n左钻钻，右钻钻，\n钻出洞子穿好啦。',
+      steps:[
+        {t:'小手抓领子', art:sv(coatG(100,104) + handG(76,46) + handG(124,46))},
+        {t:'盖房子', art:sv(coatG(100,96) + `<text x="100" y="26" font-size="26" text-anchor="middle">🏠</text>` + arrowDown(168,60,40))},
+        {t:'左钻钻，右钻钻', art:sv(coatG(100,106) + handG(24,96) + handG(176,96) + arrowRight(14,120,26) + arrowRight(186,120,-26))},
+        {t:'穿好啦', art:sv(coatG(100,104,0,1,'#FFB88C','#E08E5C') + sparkle(34,54) + sparkle(166,54))}
+      ]
+    },
+    {
+      name:'脱外套',
+      song:'小外套，拉拉链，\n两只小手往后伸。\n轻轻一拉脱下来，\n外套整齐放放好。',
+      steps:[
+        {t:'两只小手往后伸', art:sv(coatG(100,104) + handG(26,86) + handG(174,86))},
+        {t:'轻轻一拉', art:sv(coatG(100,100,0,0.95) + arrowUp(168,140,42) + handG(76,44) + handG(124,44))},
+        {t:'外套脱下来', art:sv(coatG(100,112,0,0.85,'#FFC9A8','#E08E5C') + `<text x="100" y="34" font-size="26" text-anchor="middle">👋</text>`)},
+        {t:'叠好放放好', art:sv(coatG(100,116,0,0.8,'#FFC9A8','#E08E5C') + `<rect x="46" y="118" width="108" height="14" rx="7" fill="#FFF1E4" stroke="#E08E5C" stroke-width="3"/>` + sparkle(160,54))}
+      ]
+    },
+    {
+      name:'挂衣服',
+      song:'小衣架，手中拿，\n衣服领口往里插。\n两只袖子理一理，\n衣服挂好笑哈哈。',
+      steps:[
+        {t:'拿起小衣架', art:sv(hangerG(100,84) + handG(100,142))},
+        {t:'领口往里插', art:sv(hangerG(100,66) + coatG(100,124,0,0.62,'#FFB88C','#E08E5C'))},
+        {t:'袖子理一理', art:sv(hangerG(100,60) + coatG(100,118,0,0.66,'#FFB88C','#E08E5C') + handG(30,110) + handG(170,110))},
+        {t:'衣服挂好啦', art:sv(hangerG(100,58) + coatG(100,116,0,0.68,'#FFB88C','#E08E5C') + sparkle(160,44) + sparkle(40,44))}
+      ]
+    }
+  ]
+},
+{
+  key:'shoe', name:'穿脱鞋子', emoji:'👟', color:'#7BC4A8',
+  items:[
+    {
+      name:'穿鞋子',
+      song:'小鞋子，摆摆好，\n小脚丫，往里跳。\n鞋跟提一提，\n鞋带粘一粘，\n小脚穿上跑得欢。',
+      steps:[
+        {t:'鞋子摆摆好', art:sv(shoeG(100,116) + handG(34,90) + handG(166,90))},
+        {t:'小脚丫往里跳', art:sv(shoeG(100,122,0,1) + footG(100,56,0,0.62) + arrowDown(100,52,44))},
+        {t:'提一提鞋跟', art:sv(shoeG(100,120,0,1) + footG(100,72,0,0.62) + handG(150,92) + `<text x="164" y="60" font-size="26" text-anchor="middle">👆</text>`)},
+        {t:'穿好啦', art:sv(shoeG(96,118,0,1) + shoeG(96,118,0,1) + `<text x="96" y="52" font-size="30" text-anchor="middle">✨</text>`)}
+      ]
+    },
+    {
+      name:'脱鞋子',
+      song:'小鞋子，别着急，\n小手抓住鞋后跟。\n蹬一蹬，退一退，\n小脚丫子钻出来。',
+      steps:[
+        {t:'抓住鞋后跟', art:sv(shoeG(100,118,0,1) + handG(44,86) + footG(100,66,0,0.6))},
+        {t:'蹬一蹬', art:sv(shoeG(100,124,0,1) + footG(100,52,0,0.6) + arrowUp(56,120,44))},
+        {t:'退一退', art:sv(shoeG(110,130,0,1) + footG(84,54,0,0.6) + arrowUp(148,126,40))},
+        {t:'小脚钻出来啦', art:sv(shoeG(146,122,0,0.9) + footG(60,96,0,0.75) + sparkle(104,50))}
+      ]
+    }
+  ]
+}
+];
+
+const TASKS = [
+  {key:'sock', emoji:'🧦', name:'穿脱袜子'},
+  {key:'coat', emoji:'🧥', name:'穿脱外套'},
+  {key:'shoe', emoji:'👟', name:'穿脱鞋子'}
+];
+
+const PRAISES = [
+  '你真棒！','你真能干啊！','哇，太厉害啦！','好样的！',
+  '你真了不起！','自己的事情自己做，你真棒！','小手动一动，你真棒！','你真是生活小能手！'
+];
+
+/* =========================================================
+   5. 全局状态
+   ========================================================= */
+const S = {
+  screen:'home',
+  cat:null,
+  item:0,
+  child:null,
+  scene:'school',
+  from:'kids',
+  editId:null,
+  editEmoji:'🐼',
+  editName:''
+};
+
+/* =========================================================
+   6. 视图
+   ========================================================= */
+const app = document.getElementById('app');
+
+function topbar(title, backAction){
+  return `<div class="topbar">
+    <button class="back-btn" data-action="${backAction}">‹</button>
+    <h2 class="page-title">${title}</h2>
+  </div>`;
+}
+
+/* ---------- 首页：三个入口 ---------- */
+function viewHome(){
+  return `<div class="screen">
+    <div class="home-hero">
+      <div class="hero-emoji">🧦 🧥 👟</div>
+      <h1 class="app-title">生活小能手</h1>
+      <p class="app-sub">自己的事情自己做</p>
+    </div>
+    <div class="role-grid">
+      <button class="role-btn kids" data-action="go-kids">
+        <span class="rb-icon">🧒</span>
+        <span class="rb-title">幼儿端</span>
+        <span class="rb-desc">学一学 · 来打卡</span>
+      </button>
+      <button class="role-btn parent" data-action="go-parent">
+        <span class="rb-icon">👨‍👩‍👧</span>
+        <span class="rb-title">家长端</span>
+        <span class="rb-desc">选择宝贝 · 来打卡</span>
+      </button>
+      <button class="role-btn teacher" data-action="go-teacher">
+        <span class="rb-icon">👩‍🏫</span>
+        <span class="rb-title">教师端</span>
+        <span class="rb-desc">幼儿信息 · 一周统计</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ---------- 幼儿端首页 ---------- */
+function viewKids(){
+  return `<div class="screen">
+    ${topbar('幼儿端', 'go-home')}
+    <p class="hint">小朋友，你想做什么呀？</p>
+    <div class="home-grid">
+      <button class="home-btn learn" data-action="go-learn">
+        <span class="hb-icon">🎵</span>
+        <span class="hb-main">
+          <span class="hb-title">学一学</span>
+          <span class="hb-desc">儿歌 · 图示 · 一起学</span>
+        </span>
+        <span class="hb-arrow">›</span>
+      </button>
+      <button class="home-btn checkin" data-action="go-checkin">
+        <span class="hb-icon">⭐</span>
+        <span class="hb-main">
+          <span class="hb-title">来打卡</span>
+          <span class="hb-desc">找到自己的小动物</span>
+        </span>
+        <span class="hb-arrow">›</span>
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ---------- 学一学：分类 ---------- */
+function viewLearn(){
+  return `<div class="screen">
+    ${topbar('学一学', 'go-kids')}
+    <p class="hint">选一个本领，边听儿歌边学吧！</p>
+    <div class="cat-grid">
+      ${CATS.map(c=>`
+        <button class="cat-card" data-action="open-cat" data-cat="${c.key}" style="--c:${c.color}">
+          <span class="cat-emoji">${c.emoji}</span>
+          <span class="cat-name">${c.name}</span>
+          <span class="cat-sub">${c.items.map(i=>i.name).join(' · ')}</span>
+        </button>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------- 学一学：详情 ---------- */
+function viewLearnDetail(){
+  const cat = CATS.find(c=>c.key === S.cat);
+  const item = cat.items[S.item];
+  return `<div class="screen">
+    ${topbar(cat.emoji + ' ' + cat.name, 'go-learn')}
+    <div class="tabs">
+      ${cat.items.map((it,i)=>`<button class="tab ${i===S.item?'active':''}" data-action="set-item" data-index="${i}">${it.name}</button>`).join('')}
+    </div>
+    <div class="song-card">
+      <div class="song-label">🎵 儿 歌</div>
+      <div class="song-text">${item.song}</div>
+      <button class="play-btn" data-action="play-song">🔊 听一听</button>
+    </div>
+    <div class="steps">
+      ${item.steps.map((st,i)=>`
+        <div class="step">
+          <span class="step-num">${i+1}</span>
+          ${st.art}
+          <div class="step-text">${st.t}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* ---------- 幼儿端：选小动物打卡 ---------- */
+function viewCheckin(){
+  const today = dateKey();
+  const kids = DB.children;
+  return `<div class="screen">
+    ${topbar('来打卡', 'go-kids')}
+    <p class="hint">找到自己的小动物，点一点吧！</p>
+    ${kids.length === 0
+      ? `<div class="empty-tip">还没有小动物哦～<br>请老师或家长在「教师端」添加宝贝</div>`
+      : `<div class="sticker-grid">
+          ${kids.map(c=>{
+            const n = dayStars(c.id, today);
+            return `<button class="sticker" data-action="pick-child" data-child="${c.id}">
+              <span class="sticker-emoji">${c.emoji}</span>
+              <span class="sticker-name">${esc(c.name)}</span>
+              ${n>0?`<span class="sticker-badge">⭐${n}</span>`:''}
+            </button>`;
+          }).join('')}
+        </div>`
+    }
+  </div>`;
+}
+
+/* ---------- 家长端：选择宝贝打卡 ---------- */
+function viewParent(){
+  const kids = DB.children;
+  return `<div class="screen">
+    ${topbar('家长端', 'go-home')}
+    <p class="hint">请选择宝贝，进入打卡页面</p>
+    ${kids.length === 0
+      ? `<div class="empty-tip">还没有宝贝信息哦～<br>请到「教师端」添加</div>`
+      : `<div class="sticker-grid">
+          ${kids.map(c=>{
+            const n = weekTotal(c.id);
+            return `<button class="sticker" data-action="pick-parent-child" data-child="${c.id}">
+              <span class="sticker-emoji">${c.emoji}</span>
+              <span class="sticker-name">${esc(c.name)}</span>
+              <span class="sticker-badge">⭐${n}</span>
+            </button>`;
+          }).join('')}
+        </div>`
+    }
+  </div>`;
+}
+
+/* ---------- 打卡看板 ---------- */
+function viewBoard(){
+  const c = findChild(S.child);
+  if (!c) return viewHome();
+  const today = dateKey();
+  const rec = getRec(S.child, today);
+  const scene = rec[S.scene];
+  const stars = ['sock','coat','shoe'].filter(k=>scene[k]).length;
+  const other = S.scene === 'school' ? 'home' : 'school';
+  const otherStars = ['sock','coat','shoe'].filter(k=>rec[other][k]).length;
+  const backAction = S.from === 'parent' ? 'go-parent' : 'go-checkin';
+
+  return `<div class="screen">
+    ${topbar(c.emoji + ' ' + esc(c.name) + ' 的打卡', backAction)}
+    <div class="scene-tabs">
+      <button class="scene-tab ${S.scene==='school'?'active':''}" data-action="set-scene" data-scene="school">🏫 幼儿园打卡</button>
+      <button class="scene-tab ${S.scene==='home'?'active':''}" data-action="set-scene" data-scene="home">🏠 家里打卡</button>
+    </div>
+    <div class="task-list">
+      ${TASKS.map(t=>`
+        <div class="task-row">
+          <span class="task-icon">${t.emoji}</span>
+          <span class="task-name">${t.name}</span>
+          <button class="star-btn ${scene[t.key]?'on':''}" data-action="toggle-star" data-task="${t.key}">${scene[t.key]?'⭐':'☆'}</button>
+        </div>`).join('')}
+    </div>
+    <div class="board-foot">
+      ${S.scene === 'school' ? '🏫 幼儿园' : '🏠 家里'}今天点亮了 <b>${stars}</b> 颗星<br>
+      <span style="font-size:14px;color:#B39C90;">
+        （${S.scene === 'school' ? '家里' : '幼儿园'}已经点亮 ${otherStars} 颗）
+      </span>
+    </div>
+  </div>`;
+}
+
+/* ---------- 教师端：幼儿列表 ---------- */
+function viewTeacher(){
+  const kids = DB.children;
+  return `<div class="screen">
+    ${topbar('教师端', 'go-home')}
+    <p class="hint">查看每个幼儿的一周星星情况</p>
+    <button class="add-child-btn" data-action="add-child">➕ 新增幼儿</button>
+    ${kids.length === 0
+      ? `<div class="empty-tip">还没有幼儿信息<br>点上面的按钮添加吧！</div>`
+      : `<div class="kid-list">
+          ${kids.map(c=>`
+            <div class="kid-row" data-action="open-info" data-child="${c.id}">
+              <span class="kid-emoji">${c.emoji}</span>
+              <span class="kid-name">${esc(c.name)}</span>
+              <span class="kid-stars">⭐ ${weekTotal(c.id)}</span>
+              <span class="kid-arrow">›</span>
+            </div>`).join('')}
+        </div>`
+    }
+  </div>`;
+}
+
+/* ---------- 教师端：幼儿信息 ---------- */
+function chartHTML(childId){
+  const days = weekDays();
+  const labels = ['周一','周二','周三','周四','周五','周六','周日'];
+  const todayKey = dateKey();
+  const data = days.map(d=>{
+    const key = dateKey(d);
+    return {
+      label: labels[(d.getDay()+6)%7],
+      n: dayStars(childId, key),
+      isToday: key === todayKey
+    };
+  });
+  const MAX = 6;
+  return `<div class="chart">
+    ${data.map(d=>`
+      <div class="bar-col">
+        <div class="bar-num ${d.n>0?'has':''}">${d.n>0?d.n:''}</div>
+        <div class="bar-track">
+          <div class="bar-fill ${d.n>0?'':'zero'}" style="height:${Math.max(d.n/MAX*100, 3)}%"></div>
+        </div>
+        <div class="bar-label ${d.isToday?'today':''}">${d.label}</div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function viewChildInfo(){
+  const c = findChild(S.child);
+  if (!c) return viewTeacher();
+  const total = weekTotal(c.id);
+
+  return `<div class="screen">
+    ${topbar(c.emoji + ' ' + esc(c.name), 'go-teacher')}
+    <div class="total-card">
+      <div class="total-star">⭐</div>
+      <div class="total-num">${total}</div>
+      <div class="total-label">本周一共得到 ${total} 颗小星星</div>
+    </div>
+    ${ total === 0
+      ? `<div class="empty-tip">还没有点亮小星星哦～<br>快去打卡吧！</div>`
+      : chartHTML(c.id)
+    }
+    <div class="board-foot" style="margin-top:18px;">
+      每天最多可以点亮 <b>6</b> 颗星<br>
+      <span style="font-size:14px;color:#B39C90;">（幼儿园 3 颗 + 家里 3 颗）</span>
+    </div>
+    <div class="info-actions">
+      <button class="btn-primary" data-action="edit-child" data-child="${c.id}">✏️ 修改头像和名字</button>
+      <button class="btn-danger" data-action="delete-child" data-child="${c.id}">🗑️ 删除这个幼儿</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- 编辑幼儿 ---------- */
+function viewChildEdit(){
+  const isNew = !S.editId;
+  return `<div class="screen">
+    ${topbar(isNew ? '新增幼儿' : '修改资料', isNew ? 'go-teacher' : 'go-info')}
+    <div class="av-preview" id="avPreview">${S.editEmoji}</div>
+
+    <p class="field-label">选一个头像</p>
+    <div class="av-grid">
+      ${AVATAR_POOL.map(a=>`
+        <button class="av-opt ${a===S.editEmoji?'active':''}" data-action="pick-avatar" data-av="${a}">${a}</button>
+      `).join('')}
+    </div>
+
+    <p class="field-label">宝贝的名字</p>
+    <input class="name-input" id="editNameInput" type="text" maxlength="6"
+           placeholder="请输入名字" value="${esc(S.editName)}">
+
+    <button class="btn-primary" data-action="save-child">${isNew ? '✅ 添加' : '✅ 保存'}</button>
+    ${isNew ? '' : `<button class="btn-danger" data-action="delete-child" data-child="${S.editId}">🗑️ 删除这个幼儿</button>`}
+  </div>`;
+}
+
+/* =========================================================
+   7. 渲染
+   ========================================================= */
+function render(){
+  // 安全兜底
+  if ((S.screen === 'board' || S.screen === 'childInfo') && !findChild(S.child)){
+    S.screen = 'home';
+  }
+  if (S.screen === 'learnDetail' && !CATS.find(c=>c.key === S.cat)){
+    S.screen = 'learn';
+  }
+
+  let html = '';
+  switch(S.screen){
+    case 'home':        html = viewHome(); break;
+    case 'kids':        html = viewKids(); break;
+    case 'learn':       html = viewLearn(); break;
+    case 'learnDetail': html = viewLearnDetail(); break;
+    case 'checkin':     html = viewCheckin(); break;
+    case 'parent':      html = viewParent(); break;
+    case 'board':       html = viewBoard(); break;
+    case 'teacher':     html = viewTeacher(); break;
+    case 'childInfo':   html = viewChildInfo(); break;
+    case 'childEdit':   html = viewChildEdit(); break;
+    default:            html = viewHome();
+  }
+  app.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+/* =========================================================
+   8. 交互逻辑
+   ========================================================= */
+function playSong(){
+  const cat = CATS.find(c=>c.key === S.cat);
+  if (!cat) return;
+  const item = cat.items[S.item];
+  speak(item.song.replace(/\n/g, ''), {pitch:1.8, rate:0.78});
+}
+
+function toggleStar(task){
+  const today = dateKey();
+  const rec = getRec(S.child, today);
+  const scene = rec[S.scene];
+  const wasOn = !!scene[task];
+
+  scene[task] = wasOn ? 0 : 1;
+  saveDB();
+  render();
+
+  if (!wasOn){
+    const btn = document.querySelector('.star-btn[data-task="' + task + '"]');
+    if (btn){
+      btn.classList.add('pop');
+      setTimeout(()=>btn.classList.remove('pop'), 620);
+    }
+    chime();
+    const praise = PRAISES[Math.floor(Math.random()*PRAISES.length)];
+    setTimeout(()=> speak(praise, {pitch:1.8, rate:0.82}), 480);
+  }
+}
+
+/* ---- 编辑幼儿相关 ---- */
+function openEdit(childId){
+  if (childId){
+    const c = findChild(childId);
+    if (!c) return;
+    S.editId = c.id;
+    S.editEmoji = c.emoji;
+    S.editName = c.name;
+  } else {
+    S.editId = null;
+    S.editEmoji = AVATAR_POOL[Math.floor(Math.random()*AVATAR_POOL.length)];
+    S.editName = '';
+  }
+  S.screen = 'childEdit';
+  render();
+}
+
+function updateAvatarSelection(){
+  document.querySelectorAll('.av-opt').forEach(el=>{
+    el.classList.toggle('active', el.dataset.av === S.editEmoji);
+  });
+  const prev = document.getElementById('avPreview');
+  if (prev) prev.textContent = S.editEmoji;
+}
+
+function saveChildEdit(){
+  const inp = document.getElementById('editNameInput');
+  const name = (inp ? inp.value : S.editName).trim().slice(0, 6) || '宝贝';
+
+  if (S.editId){
+    const c = findChild(S.editId);
+    if (c){
+      c.name = name;
+      c.emoji = S.editEmoji;
+    }
+    saveDB();
+    S.child = S.editId;
+    S.screen = 'childInfo';
+  } else {
+    const newChild = {id: uid(), name, emoji: S.editEmoji};
+    DB.children.push(newChild);
+    saveDB();
+    S.screen = 'teacher';
+  }
+  render();
+}
+
+function deleteChild(childId){
+  const c = findChild(childId);
+  if (!c) return;
+  if (!confirm('确定要删除「' + c.name + '」吗？\n删除后该幼儿的打卡记录也会一起消失。')) return;
+
+  DB.children = DB.children.filter(x => x.id !== childId);
+  delete DB.records[childId];
+  saveDB();
+  S.screen = 'teacher';
+  S.child = null;
+  S.editId = null;
+  render();
+}
+
+/* ---- 事件委托 ---- */
+app.addEventListener('click', function(e){
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const a = el.dataset.action;
+
+  if (a === 'go-home'){ S.screen = 'home'; render(); }
+  else if (a === 'go-kids'){ S.screen = 'kids'; render(); }
+  else if (a === 'go-parent'){ S.screen = 'parent'; render(); }
+  else if (a === 'go-teacher'){ S.screen = 'teacher'; render(); }
+  else if (a === 'go-learn'){ S.screen = 'learn'; render(); }
+  else if (a === 'go-checkin'){ S.screen = 'checkin'; render(); }
+  else if (a === 'go-info'){ S.screen = 'childInfo'; render(); }
+
+  else if (a === 'open-cat'){
+    S.cat = el.dataset.cat;
+    S.item = 0;
+    S.screen = 'learnDetail';
+    render();
+  }
+  else if (a === 'set-item'){
+    S.item = Number(el.dataset.index);
+    render();
+  }
+  else if (a === 'play-song'){
+    playSong();
+  }
+
+  else if (a === 'pick-child'){
+    S.child = el.dataset.child;
+    S.scene = 'school';
+    S.from = 'kids';
+    S.screen = 'board';
+    render();
+  }
+  else if (a === 'pick-parent-child'){
+    S.child = el.dataset.child;
+    S.scene = 'home';
+    S.from = 'parent';
+    S.screen = 'board';
+    render();
+  }
+  else if (a === 'set-scene'){
+    S.scene = el.dataset.scene;
+    render();
+  }
+  else if (a === 'toggle-star'){
+    toggleStar(el.dataset.task);
+  }
+
+  else if (a === 'open-info'){
+    S.child = el.dataset.child;
+    S.screen = 'childInfo';
+    render();
+  }
+  else if (a === 'add-child'){
+    openEdit(null);
+  }
+  else if (a === 'edit-child'){
+    openEdit(el.dataset.child);
+  }
+  else if (a === 'delete-child'){
+    deleteChild(el.dataset.child);
+  }
+  else if (a === 'pick-avatar'){
+    S.editEmoji = el.dataset.av;
+    updateAvatarSelection();
+  }
+  else if (a === 'save-child'){
+    saveChildEdit();
+  }
+});
+
+/* 输入名字时同步到状态 */
+app.addEventListener('input', function(e){
+  if (e.target && e.target.id === 'editNameInput'){
+    S.editName = e.target.value;
+  }
+});
+
+/* 启动 */
+render();
+</script>
+</body>
+</html>
